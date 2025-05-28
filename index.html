@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rafal Cobra - v23</title>
+  <title>Rafal Cobra</title>
   
-  <!-- Favicon -->
+  <!-- Favicon usando o link direto da imagem -->
   <link rel="icon" href="https://i.imgur.com/StLEPUF.png" type="image/png" sizes="32x32">
   
   <!-- Firebase SDK (modo compatível) -->
@@ -131,7 +131,7 @@
     #gameOverScreen button {
       padding: 10px 20px; 
       font-size: 3vh; 
-      margin-top: 20px; 
+      margin-top: 20px;
       background: #333; 
       color: #fff;
       border: none; 
@@ -412,11 +412,18 @@
     const gameOverScreen = document.getElementById("gameOverScreen");
     const finalScoreEl = document.getElementById("finalScore");
     
+    // Modificações para evitar problemas de CORS:
     const backgroundImg = new Image();
+    backgroundImg.crossOrigin = "anonymous";
     backgroundImg.src = "https://media.discordapp.net/attachments/1310983426488274987/1373339971318054984/Screenshot_20250414_152127_Gallery.jpg?ex=6833f144&is=68329fc4&hm=5bd4dac3746af61cf5706444daccb5e8b93aeacb37ceea2830c29f1fac708914&=&format=webp&width=1260&height=756";
+    
     const snakeImg = new Image();
+    snakeImg.crossOrigin = "anonymous";
+    // Usando a mesma URL da imagem de background para o snake
     snakeImg.src = backgroundImg.src;
+    
     const foodImg = new Image();
+    foodImg.crossOrigin = "anonymous";
     foodImg.src = "https://media.discordapp.net/attachments/1326527256532746302/1375603066434228244/IMG_2161.png?ex=683443f0&is=6832f270&hm=5523cd4f5da5c5026d762309410ff13eaef4a20ec413e1166be81075af848853&=&format=webp&quality=lossless&width=908&height=912";
     
     function resizeCanvas() {
@@ -439,10 +446,12 @@
       drawGame();
     }
     window.addEventListener("resize", resizeCanvas);
+    
     function drawInitialBackground() {
       bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
       bgCtx.drawImage(backgroundImg, 0, 0, bgCanvas.width, bgCanvas.height);
     }
+    
     function placeApple() {
       apple.x = Math.floor(Math.random() * tileCount);
       apple.y = Math.floor(Math.random() * tileCount);
@@ -450,9 +459,11 @@
         placeApple();
       }
     }
+    
     function collision(head) {
       return snake.slice(1).some(seg => seg.x === head.x && seg.y === head.y);
     }
+    
     function drawGame() {
       let gridSize = gameCanvas.width / tileCount;
       ctx.fillStyle = "#888";
@@ -462,6 +473,7 @@
         ctx.drawImage(snakeImg, seg.x * gridSize, seg.y * gridSize, gridSize, gridSize);
       });
     }
+    
     function startGame() {
       gameOverScreen.style.display = "none";
       snake = [{ x: 10, y: 10 }];
@@ -476,6 +488,7 @@
       document.getElementById("pauseBtn").disabled = false;
       document.getElementById("restartBtn").disabled = false;
     }
+    
     function beginMovement(e) {
       const key = e.key;
       if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(key)) {
@@ -491,6 +504,7 @@
         }
       }
     }
+    
     function changeDirection(e) {
       const key = e.key;
       if (key === "ArrowUp" && velocity.y !== 1) velocity = { x: 0, y: -1 };
@@ -498,6 +512,7 @@
       if (key === "ArrowLeft" && velocity.x !== 1) velocity = { x: -1, y: 0 };
       if (key === "ArrowRight" && velocity.x !== -1) velocity = { x: 1, y: 0 };
     }
+    
     function gameTick() {
       const head = { x: snake[0].x + velocity.x, y: snake[0].y + velocity.y };
       snake.unshift(head);
@@ -541,6 +556,7 @@
         }
       });
     }
+    
     function showLeaderboard() {
       leaderboardList.innerHTML = "<p>Carregando leaderboard...</p>";
       container.style.display = "none";
@@ -571,6 +587,7 @@
           leaderboardScreen.style.display = "flex";
         });
     }
+    
     function backToGame() {
       leaderboardScreen.style.display = "none";
       container.style.display = "block";
